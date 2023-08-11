@@ -29,10 +29,51 @@
                         </template>
                     </el-input>
                 </el-form-item>
+
+
+                <el-space fill>
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>取值0-15，默认为5中语速</p>
+                    </el-alert>
+                    <el-form-item label="语速">
+                        <el-input v-model="form.baidu_config.spd" :disabled="update" type="number"/>
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill>
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>取值0-15，默认为5中语调</p>
+                    </el-alert>
+                    <el-form-item label="音调">
+                        <el-input v-model="form.baidu_config.pit" :disabled="update" type="number"/>
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill>
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>基础音库取值0-9，精品音库取值0-15，默认为5中音量（取值为0时为音量最小值，并非为无声）</p>
+                    </el-alert>
+                    <el-form-item label="音量">
+                        <el-input v-model="form.baidu_config.vol" :disabled="update" type="number"/>
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill>
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>(基础音库) 度小宇=1，度小美=0，度逍遥=3，度丫丫=4</p>
+                    </el-alert>
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>(精品音库) 度逍遥=5003，度小鹿=5118，度博文=106，度小童=110，度小萌=111，度米朵=103，度小娇=5</p>
+                    </el-alert>
+                    <el-form-item label="音库">
+                        <el-input v-model="form.baidu_config.per" :disabled="update" type="number"/>
+                    </el-form-item>
+                </el-space>
+
             </div>
             <br>
             <div class="minbox">
-                <p><a href="https://fastgpt.run/app/list">astGPT配置</a></p>
+                <p><a href="https://fastgpt.run/app/list">FastGPT配置</a></p>
                 <el-form-item label="AppId">
                     <el-input :type="showPass3 ? 'text' : 'password'" v-model="form.fastgpt_appid" :disabled="update">
                         <template #suffix>
@@ -109,6 +150,13 @@ export default {
                 fastgpt_api_key: "",
                 api2d_forward_key: "",
                 sd_url: "",
+                baidu_config: {
+                    video_type: "",
+                    spd: 5,
+                    pit: 5,
+                    vol: 5,
+                    per: 5003,
+                }
             },
             update: true,
             showPass1: false,

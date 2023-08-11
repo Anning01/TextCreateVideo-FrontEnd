@@ -4,88 +4,65 @@
 
 
         <div class="minbox">
-                <p>暂无</p>
-            </div>
-        <!-- <el-form :model="form" label-width="120px">
-            <div class="minbox">
-                <p>Stable Diffusion</p>
-                <div>
-                    <el-form-item label="启动路径配置">
-                        <el-input v-model="form.sd_url" :disabled="update">
-                            <template #prepend>http://</template>
-                            <template #append>/sdapi/v1/txt2img</template>
-                        </el-input>
-                    </el-form-item>
-                </div>
-                <el-form-item />
-            </div>
-            <br>
-            <el-form-item>
-                <el-button type="info" class="my_button" @click="update = false">修改</el-button>
-                <el-button type="primary" class="my_button" @click="onSubmit(form)">保存</el-button>
+
+            <el-form-item label="图片切换类型">
+                <el-select v-model="form.video_type" :disabled="update">
+                    <el-option label="默认样式" value="默认样式" />
+                    <el-option label="向上移动" value="向上移动" />
+                    <el-option label="渐入渐出" value="渐入渐出" />
+                </el-select>
             </el-form-item>
-        </el-form> -->
+        </div>
+
+        <br>
+        <el-form-item>
+            <el-button type="info" class="my_button" @click="update = false">修改</el-button>
+            <el-button type="primary" class="my_button" @click="onSubmit(form)">保存</el-button>
+        </el-form-item>
     </div>
 </template>
   
 <script lang="ts">
-
+import apiurl from '@/api/url';
+import link from '@/api/link';
+import { ElNotification } from 'element-plus'
+import { h } from 'vue'
 export default {
     // data() 返回的属性将会成为响应式的状态
     // 并且暴露在 `this` 上
     data() {
         return {
             form: {
-                sd_url: "",
+                video_type: "",
             },
             update: true,
         }
     },
     mounted() {
+        link(apiurl.config_system, 'get').then((success: any) => {
+            this.form = success.data.data
+        })
     },
     methods: {
         onSubmit(form: any) {
-            console.log(form);
-            
+            link(apiurl.config_system, 'post', form).then((success: any) => {
+                ElNotification({
+                    title: '保存成功',
+                    message: h('i', { style: 'color: red' }, success.data.message),
+                    type: 'success',
+                })
+                this.form = success.data.data
+            }).catch((err) => {
+                ElNotification({
+                    title: '错误',
+                    message: err.message,
+                    type: 'error',
+                })
+            })
         }
     },
 }
 
-// do not use same name with ref
-
-
-// type TConfig = {
-//     baidu_api_key: string,
-//     baidu_secret_key: string,
-//     fastgpt_appid: string,
-//     fastgpt_api_key: string,
-//     api2d_forward_key: string,
-// }
-
-
-// let form = reactive<TConfig>(
-//     {
-//         baidu_api_key: "",
-//         baidu_secret_key: "",
-//         fastgpt_appid: "",
-//         fastgpt_api_key: "",
-//         api2d_forward_key: "",
-//     }
-// )
-
-
-
-// const update = ref(true)
-// const showPass1 = ref(false)
-// const showPass2 = ref(false)
-// const showPass3 = ref(false)
-// const showPass4 = ref(false)
-// const showPass5 = ref(false)
-
-
-// const onSubmit = () => {
-//     console.log('submit!')
-// }
 </script>
 <style lang="scss" scoped> .my_button {
      margin: 0 auto;

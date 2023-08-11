@@ -9,7 +9,6 @@ export default defineStore('HomeModule', {
         return {
             // 所有这些属性都将自动推断其类型
             navBool: false,
-            dialogFormVisible: false,
             book_list: [],
         }
     },
