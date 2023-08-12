@@ -10,6 +10,7 @@ const apiurl = {
     book_class: "/book/class",
     book_voice_download: "/book/voice/download",
     book_pictures_download: "/book/pictures/download",
+    book_prompt_tags: "/book/prompt_tags",
 }
 
 

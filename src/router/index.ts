@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import { Notebook, Setting, Link, Tools } from "@element-plus/icons-vue";
+import { Notebook, Setting, Link, Tools, Comment, PriceTag, Mic, Picture, Document } from "@element-plus/icons-vue";
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
-  history: createWebHashHistory(),
+  history: createWebHistory(),
+  // history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -28,7 +29,7 @@ const router = createRouter({
               component: () => import('../views/home/book/index.vue'),
               meta: {
                 title: "书籍信息",
-                icon: Notebook
+                icon: Document
               }
             },
             {
@@ -37,7 +38,16 @@ const router = createRouter({
               component: () => import('../views/home/book/section.vue'),
               meta: {
                 title: "提示词",
-                icon: Notebook
+                icon: Comment
+              }
+            },
+            {
+              path: '/book-tags',
+              name: 'book-tags',
+              component: () => import('../views/home/book/tags.vue'),
+              meta: {
+                title: "人物标签",
+                icon: PriceTag
               }
             },
             {
@@ -46,7 +56,7 @@ const router = createRouter({
               component: () => import('../views/home/book/voice.vue'),
               meta: {
                 title: "音频文件",
-                icon: Notebook
+                icon: Mic
               }
             },
             {
@@ -55,7 +65,7 @@ const router = createRouter({
               component: () => import('../views/home/book/pictures.vue'),
               meta: {
                 title: "图片文件",
-                icon: Notebook
+                icon: Picture
               }
             },
           ]

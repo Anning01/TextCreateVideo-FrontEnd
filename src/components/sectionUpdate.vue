@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="section.dialogFormVisible" title="住户信息">
+    <el-dialog v-model="section.dialogFormVisible" title="文本信息">
         <el-form :model="section.scetion_obj">
             <el-form-item label="书名" :label-width="formLabelWidth">
                 <el-input v-model="section.scetion_obj.name" autocomplete="off" disabled="true" />

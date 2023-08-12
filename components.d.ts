@@ -37,5 +37,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SectionUpdate: typeof import('./src/components/sectionUpdate.vue')['default']
+    TagsUpdate: typeof import('./src/components/tagsUpdate.vue')['default']
   }
 }

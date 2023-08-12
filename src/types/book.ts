@@ -5,3 +5,11 @@ export type TScetion = {
     prompt: string,
     negative: string,
 }
+
+export type TTags = {
+    id: number,
+    name: string,
+    content: string,
+    prompt: string,
+    negative: string,
+}
