@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import { Notebook, Setting, Link, Tools, Comment, PriceTag, Mic, Picture, Document } from "@element-plus/icons-vue";
+import { Notebook, Setting, Link, Tools, Comment, PriceTag, Mic, Picture, Document, SetUp } from "@element-plus/icons-vue";
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
-  history: createWebHistory(),
-  // history: createWebHashHistory(),
+  // history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -88,6 +88,15 @@ const router = createRouter({
               }
             },
             {
+              path: '/stable-diffusion',
+              name: 'stable-diffusion',
+              component: () => import('../views/home/config/StableDiffusionConfig.vue'),
+              meta: {
+                title: "SD配置",
+                icon: SetUp
+              }
+            },
+            {
               path: '/third-party',
               name: 'third-party',
               component: () => import('../views/home/config/ThirdParty.vue'),
@@ -99,6 +108,11 @@ const router = createRouter({
           ]
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/home/user/login.vue'),
     },
 
   ]

@@ -13,3 +13,8 @@ export type TTags = {
     prompt: string,
     negative: string,
 }
+export type MenuDataType = {
+    txt: string
+    current: boolean
+    type: string
+}

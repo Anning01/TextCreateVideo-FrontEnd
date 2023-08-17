@@ -73,6 +73,20 @@
             </div>
             <br>
             <div class="minbox">
+                <p><a href="https://platform.openai.com/docs/introduction">ChatGPT配置</a></p>
+                <el-form-item label="openAPI_KEY">
+                    <el-input :type="showPass6 ? 'text' : 'password'" v-model="form.openAPI_KEY" :disabled="update">
+                        <template #suffix>
+                            <el-icon class="el-input__icon">
+                                <View v-if="showPass6" @click="showPass6 = !showPass6" />
+                                <Hide v-else @click="showPass6 = !showPass6" />
+                            </el-icon>
+                        </template>
+                    </el-input>
+                </el-form-item>
+            </div>
+            <br>
+            <div class="minbox">
                 <p><a href="https://fastgpt.run/app/list">FastGPT配置</a></p>
                 <el-form-item label="AppId">
                     <el-input :type="showPass3 ? 'text' : 'password'" v-model="form.fastgpt_appid" :disabled="update">
@@ -148,6 +162,7 @@ export default {
                 baidu_secret_key: "",
                 fastgpt_appid: "",
                 fastgpt_api_key: "",
+                openAPI_KEY: "",
                 api2d_forward_key: "",
                 sd_url: "",
                 baidu_config: {
@@ -164,6 +179,7 @@ export default {
             showPass3: false,
             showPass4: false,
             showPass5: false,
+            showPass6: false,
         }
     },
     mounted() {

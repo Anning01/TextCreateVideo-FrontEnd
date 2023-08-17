@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '@/router'
 
 
 let axiosurl = 'http://localhost:8001'
@@ -20,13 +21,34 @@ service.defaults.timeout = 3000
 
 // 2、请求拦截和响应拦截
 // 添加请求拦截器
-service.interceptors.request.use(function (config) {
-  // 在发送请求之前做些什么
-  return config;
-}, function (error) {
-  // 对请求错误做些什么
-  return Promise.reject(error);
-});
+// service.interceptors.request.use(function (config) {
+//   // 在发送请求之前做些什么
+//   if (login.token){
+//     return config;
+//   }
+//   router.push('/home')
+//   return config
+// }, function (error) {
+//   // 对请求错误做些什么
+//   return Promise.reject(error);
+// });
+service.interceptors.request.use(
+  config => {
+    // 在发送请求之前做些什么
+    
+    // 判断是否存在token
+    if (!localStorage.getItem('token')) {
+      // 不存在,跳转登录
+      router.push('/login')
+    }
+    
+    return config
+  },
+  error => {
+    // 对请求错误做些什么
+    return Promise.reject(error)
+  }
+)
 
 // 添加响应拦截器
 service.interceptors.response.use(function (response) {

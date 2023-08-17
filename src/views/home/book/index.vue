@@ -15,7 +15,10 @@
         </template>
     </el-upload>
 
-    <el-table :data="home.book_list.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange"
+        :data="home.book_list.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border style="width: 100%">
+        <el-table-column type="selection" width="55" />
+
         <el-table-column prop="id" label="编号" />
         <el-table-column prop="name" label="书名" />
         <el-table-column prop="create_dt" label="创建时间" />
@@ -26,16 +29,33 @@
         </el-table-column>
         <el-table-column label="视频">
             <template #default="scope">
-                <el-button size="small" type="success" @click="createVideo(scope.row)"
-                    v-if="scope.row.status == 'default'">生成视频</el-button>
+                <template v-if="scope.row.status == 'default'">
+                    <el-button size="small" type="success" @click="createVideo(scope.row)"
+                        v-if="scope.row.status == 'default'">生成视频</el-button>
+                </template>
+
                 <!-- <el-button size="small" type="success" @click="createVideo(scope.row)" v-if="scope.row.status == 'default'">生成视频</el-button> -->
-                <el-button size="small" type="warning" v-else-if="scope.row.status == 'underway'" disabled>进行中</el-button>
-                <el-button size="small" type="danger" v-else-if="scope.row.status == 'failure'"
-                    @click="failureReason(scope.row)">失败原因</el-button>
-                <el-button size="small" type="primary" @click="downloadVideo(scope.row)" v-else>下载</el-button>
+                
+                <template v-else-if="scope.row.status == 'underway'" >
+                    <el-button size="small" type="warning" disabled>进行中</el-button>
+
+                </template>
+                
+                <template v-else-if="scope.row.status == 'failure'">
+                    <el-button size="small" type="danger" @click="failureReason(scope.row)">失败原因</el-button>
+
+                </template>
+
+                <template v-else>
+                    <el-button size="small" type="primary" @click="downloadVideo(scope.row)">下载</el-button>
+                    &nbsp;&nbsp;
+                    <el-button size="small" type="primary" @click="createVideo(scope.row)">重新生成</el-button>
+                </template>
+
             </template>
         </el-table-column>
     </el-table>
+    <el-button type="primary" @click="DeleteSelected">删除</el-button>
     <el-dialog v-model="failureDialogVisible" title="失败原因" width="30%" draggable>
         <span>{{ failureInfo }}</span>
         <template #footer>
@@ -73,10 +93,10 @@ const changeFile = (uploadFile: any) => {
 }
 
 const handleSizeChange = (val: number) => {
-  pageSize.value = val
+    pageSize.value = val
 }
 const handleCurrentChange = (val: number) => {
-  currentPage.value = val
+    currentPage.value = val
 }
 
 // 失败原因
@@ -161,6 +181,40 @@ onMounted(() => {
     home.get_book_list()
 })
 
+const id_list = ref<number[]>([])
+
+const handleSelectionChange = (selection: {
+    id: number,
+    name: string,
+    create_dt: string,
+}[]) => {
+    id_list.value = selection.map(obj => obj.id);
+}
+
+
+
+
+// 删除选中数据
+const DeleteSelected = () => {
+
+    if (id_list.value.length > 0) {
+        const count = id_list.value.length
+        link(apiurl.book_list, 'delete', { "id_list": id_list.value }).then((success: any) => {
+            ElNotification({
+                title: success.data.message,
+                message: `成功删除了${count}条数据`,
+                type: 'success',
+            })
+            window.location.reload()
+        });
+    } else {
+        ElNotification({
+            title: '删除失败',
+            message: "未选中任何数据",
+            type: 'error',
+        })
+    }
+}
 
 </script>
 

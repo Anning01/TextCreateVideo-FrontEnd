@@ -11,18 +11,20 @@
             <el-table-column prop="index" label="图片顺序" />
             <el-table-column label="图片">
                 <template #default="scope">
-                    <img   style="max-width: 80px; max-height: 80px" class="table-thumb"
-                    :src="apiurl.base + scope.row.path" @click="showPreview(apiurl.base + scope.row.path)">
+                    <img style="max-width: 80px; max-height: 80px" class="table-thumb" :src="apiurl.base + scope.row.path"
+                        @click="showPreview(apiurl.base + scope.row.path)">
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作" width="150">
                 <template #default="scope">
                     <el-button size="small" @click="downloadVoice(scope.row)">下载</el-button>
+                    <el-button size="small" type="primary" @click="Redraw(scope.row)" :disabled="isButtonDisabled" v-text="buttonText" />
                 </template>
             </el-table-column>
 
         </el-table>
         <el-button type="primary" @click="downloadVoiceZip">下载</el-button>
+        <el-button type="danger" @click="DeleteSelected">删除</el-button>
         <br>
         <el-pagination :current-page="currentPage" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
             :total="sections.length" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
@@ -50,6 +52,8 @@ const options = ref<{
 }[]>()
 const previewVisible = ref()
 const previewUrl = ref()
+const isButtonDisabled = ref(false)
+const buttonText = ref("重绘")
 
 const showPreview = (url: string) => {
     previewUrl.value = url;
@@ -84,6 +88,29 @@ const downloadVoice = (row: any) => {
         apiurl.base + row.path
     );
 }
+
+// 重绘图
+const Redraw = (row: any) => {
+    link(apiurl.pictures_redraw, 'get', {}, { "pictures_id": row.id }).then((success: any) => {
+        if (success.data.code == 200) {
+            ElNotification({
+                title: "重绘成功",
+                message: success.data.message,
+                type: 'success',
+            })
+            buttonText.value = "重绘中"
+            isButtonDisabled.value = !isButtonDisabled.value
+        }else{
+            ElNotification({
+                title: '重绘失败',
+                message: success.data.message,
+                type: 'error',
+            })
+        }
+
+    })
+}
+
 const FiltrationAttr = (value: number) => {
     link(apiurl.book_pictures, 'get', {}, { "book_id": value }).then((success: any) => {
         sections.value = success?.data;
@@ -108,19 +135,40 @@ onMounted(() => {
     });
 })
 
+// 删除选中数据
+const DeleteSelected = () => {
+
+    if (id_list.value.length > 0) {
+        const count = id_list.value.length
+        link(apiurl.book_pictures, 'delete', { "id_list": id_list.value }).then((success: any) => {
+            ElNotification({
+                title: success.data.message,
+                message: `成功删除了${count}条数据`,
+                type: 'success',
+            })
+            window.location.reload()
+        });
+    } else {
+        ElNotification({
+            title: '删除失败',
+            message: "未选中任何数据",
+            type: 'error',
+        })
+    }
+}
+
 </script>
 
 <style scoped>
-
 .table-thumb {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
 
-  transition: transform 0.3s;
+    transition: transform 0.3s;
 }
 
 .table-thumb:hover {
-  transform: scale(1.2); 
+    transform: scale(1.2);
 }
 </style>
