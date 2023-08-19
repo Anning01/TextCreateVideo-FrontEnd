@@ -87,6 +87,7 @@ watch(ruleForm, (newvalue, oldvalue) => {
 })
 
 
+
 const rules = reactive<FormRules<typeof ruleForm>>({
     password: [{ validator: validatePass, trigger: 'blur' }],
     username: [{ validator: checkUsername, trigger: 'blur' }],
@@ -97,7 +98,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             axios.post('http://8.134.91.58/api/token/', ruleForm).then((ok: any) => {
-                localStorage.setItem('token', `Bearer {ok.data.access}`)
+                localStorage.setItem('token', ok.data.access)
                 router.push('/book')
             }).catch((err) => {
                 ElNotification({

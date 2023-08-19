@@ -19,7 +19,11 @@ export default defineStore('HomeModule', {
         get_book_list() {
             link(apiurl.book_list, 'get').then(
                 (success: any) => {
-                    this.book_list = success.data.data
+                    if (!success.data?.code){
+                        alert(success.data.message)
+                    }else{
+                        this.book_list = success.data.data
+                    }
                 }
             ).catch((err: any) => {
                 console.log(err);
