@@ -2,21 +2,64 @@
     <spen>Stable Diffusion配置</spen>
     <div class="box">
         <template v-for="item in data" :key="item.key">
-            <el-form-item :label="item.description">
-                <el-input v-if="item.type === 'str'" v-model="item.value" />
-                <el-input v-else-if="item.type === 'int'" type="number" v-model="item.value" />
-                <el-switch v-else-if="item.type === 'bool'" v-model="item.value" />
+            <el-form-item>
 
-                <el-checkbox-group v-else-if="item.type === 'list'" v-model="item.value">
-                    <el-checkbox v-for="i in item.value" :label="i" name="type" />
-                </el-checkbox-group>
+                <el-space fill v-if="item.type === 'str'">
+                    <el-alert type="warning" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-form-item :label="item.key">
+                        <el-input v-model="item.value" />
+                    </el-form-item>
+                </el-space>
 
-                <el-input
-                type="textarea"
-                :rows="8"
-                placeholder="请输入JSON"
-                v-else-if="item.type === 'dict'" v-model="item.value">
-                </el-input>
+                <el-space fill v-else-if="item.type === 'int'" type="number">
+                    <el-alert type="warning" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-form-item :label="item.key">
+                        <el-input v-model="item.value" />
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill v-else-if="item.type === 'bool'">
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-form-item :label="item.key">
+                        <el-switch v-model="item.value" />
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill v-else-if="item.type === 'list'">
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-form-item :label="item.key">
+                        <el-checkbox-group v-model="item.value">
+                            <el-checkbox v-for="i in item.value" :label="i" name="type" />
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill v-else-if="item.type === 'dict'">
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-form-item :label="item.key">
+                        <el-input type="textarea" :rows="8" placeholder="请输入JSON" v-model="item.value">
+                        </el-input>
+                    </el-form-item>
+                </el-space>
+
+                <el-space fill v-else-if="item.type === 'selector'">
+                    <el-alert type="success" show-icon :closable="false">
+                        <p>{{ item.description }}</p>
+                    </el-alert>
+                    <el-select v-model="item.value" :value="item.value" class="m-2" placeholder="Select" size="large">
+                        <el-option v-for="i in item.selector" :key="i.value" :label="'【' + i.value + '】' + i.name" :value="i.value" />
+                    </el-select>
+                </el-space>
             </el-form-item>
 
         </template>
@@ -33,6 +76,7 @@ import apiurl from '@/api/url';
 import link from '@/api/link';
 import { ElNotification } from 'element-plus'
 import { onMounted, ref } from 'vue'
+import { log } from 'console';
 
 const data = ref()
 
@@ -47,38 +91,44 @@ type StableDiffusionConfigTypeList = {
 type Type = string | number | boolean | Record<string, any> | any[]; // TS类型
 
 const Reset = () => {
-    link(apiurl.stable_diffusion, 'post').then((success: any)=>{
-        if (success.data.code == 200){
+    link(apiurl.stable_diffusion, 'post').then((success: any) => {
+        if (success.data.code == 200) {
             ElNotification({
-            title: "重置成功",
-            message: success.data.message,
-            type: 'success',
-        })
-        window.location.reload()
-        }else{
+                title: "重置成功",
+                message: success.data.message,
+                type: 'success',
+            })
+            window.location.reload()
+        } else {
             ElNotification({
-            title: "重置失败",
-            message: success.data.message,
-            type: 'error',
-        })
+                title: "重置失败",
+                message: success.data.message,
+                type: 'error',
+            })
         }
     })
 }
 const onSubmit = (form: any) => {
-    link(apiurl.stable_diffusion, 'put', form).then((success: any)=>{
-        if (success.data.code == 200){
+    data.value.forEach((item: { type: string; value: string; }) => {
+        if (item.type === 'dict') {
+            item.value = JSON.parse(item.value)
+        }
+    })
+    
+    link(apiurl.stable_diffusion, 'put', form).then((success: any) => {
+        if (success.data.code == 200) {
             ElNotification({
-            title: "修改成功",
-            message: success.data.message,
-            type: 'success',
-        })
-        data.value = success.data.data
-        }else{
+                title: "修改成功",
+                message: success.data.message,
+                type: 'success',
+            })
+            window.location.reload()
+        } else {
             ElNotification({
-            title: "修改失败",
-            message: success.data.message,
-            type: 'error',
-        })
+                title: "修改失败",
+                message: success.data.message,
+                type: 'error',
+            })
         }
     })
 }
@@ -86,9 +136,13 @@ const onSubmit = (form: any) => {
 onMounted(() => {
     link(apiurl.stable_diffusion, 'get').then((success: any) => {
         data.value = success.data.data as StableDiffusionConfigTypeList
+        data.value.forEach((item: { type: string; value: string; }) => {
+            if (item.type === 'dict') {
+                item.value = JSON.stringify(item.value)
+            }
+        })
     });
 })
-
 
 </script>
 
