@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '@/router'
+import { log } from 'console'
 
 
 let axiosurl = 'http://localhost:8001'
@@ -17,7 +18,7 @@ const service = axios.create({
 })
 
 // 设置超时时间
-service.defaults.timeout = 3000
+service.defaults.timeout = 8000
 
 // 2、请求拦截和响应拦截
 // 添加请求拦截器
