@@ -129,7 +129,6 @@
                 <div>
                     <el-form-item label="启动路径配置">
                         <el-input v-model="form.sd_url" :disabled="update">
-                            <template #prepend>http://</template>
                             <template #append>/sdapi/v1/txt2img</template>
                         </el-input>
                     </el-form-item>

@@ -47,7 +47,7 @@
                         <el-alert type="warning" show-icon :closable="false">
                             <p>注意：【正向提示词】和【反向提示词】需要输入英文，多个提示词使用逗号隔开</p>
                         </el-alert>
-                        <el-form-item label="正向提示词">
+                        <el-form-item label="正向提示词" required>
                             <el-input v-model="form.prompt" autocomplete="off" />
                         </el-form-item>
                     </el-space>
@@ -105,13 +105,13 @@ const onClick = (form: any) => {
             message: "请选择书籍",
             type: 'error',
         })
-    } else if (form.content === null) {
+    } else if (form.content.length === 0) {
         ElNotification({
             title: '保存失败',
             message: "人物或者场景词不能为空",
             type: 'error',
         })
-    } else if (form.prompt === null || form.negative === null) {
+    } else if (form.prompt.length === 0 && form.negative.length === 0) {
         ElNotification({
             title: '保存失败',
             message: "正向提示词或者反向提示词不能全空",
